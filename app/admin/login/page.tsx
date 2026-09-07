@@ -8,11 +8,19 @@ export default function AdminLoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+    setError('');
+
+    const response = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    });
+
+    if (!response.ok) {
       setError('관리자 비밀번호가 올바르지 않습니다.');
       return;
     }
-    document.cookie = 'admin_session=enabled; path=/; max-age=3600';
+
     window.location.href = '/admin';
   };
 

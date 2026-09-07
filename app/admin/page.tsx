@@ -1,24 +1,39 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export default function AdminDashboardPage() {
-  const [authorized, setAuthorized] = useState(false);
+  const [status, setStatus] = useState<'loading' | 'authorized' | 'unauthorized'>('loading');
   const [customers, setCustomers] = useState<any[]>([]);
 
   useEffect(() => {
-    const cookie = document.cookie.split('; ').find((item) => item.startsWith('admin_session='));
-    setAuthorized(cookie === 'admin_session=enabled');
     const load = async () => {
       const response = await fetch('/api/admin/customers');
+      if (!response.ok) {
+        setStatus('unauthorized');
+        return;
+      }
       const data = await response.json();
       setCustomers(data.customers || []);
+      setStatus('authorized');
     };
     load();
   }, []);
 
-  if (!authorized) {
-    return <div className="container-shell py-20 text-center text-lg text-[#433a35]">관리자 로그인이 필요합니다.</div>;
+  if (status === 'loading') {
+    return null;
+  }
+
+  if (status === 'unauthorized') {
+    return (
+      <div className="container-shell py-20 text-center text-lg text-[#433a35]">
+        관리자 로그인이 필요합니다.
+        <div className="mt-4">
+          <Link href="/admin/login" className="btn-secondary">로그인하러 가기</Link>
+        </div>
+      </div>
+    );
   }
 
   return (
