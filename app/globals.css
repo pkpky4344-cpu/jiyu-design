@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f7f2ed;
+  --foreground: #2a241f;
+  --muted: #6b5e56;
+  --panel: #f8f4f0;
+  --card: rgba(255, 255, 255, 0.72);
+  --border: rgba(74, 59, 48, 0.12);
+  --accent: #b89a70;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: linear-gradient(180deg, #f9f5f1 0%, #f2eae0 100%);
+  color: var(--foreground);
+  font-family: Arial, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: -0.02em;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+@layer components {
+  .container-shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-title {
+    @apply text-3xl font-medium tracking-tight text-charcoal sm:text-4xl;
+  }
+
+  .panel {
+    @apply rounded-[28px] border border-[color:var(--border)] bg-white/60 backdrop-blur-sm shadow-soft;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-charcoal px-6 py-3 text-sm font-medium text-white transition hover:bg-[#1d1a18];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-full border border-[#2a241f]/15 bg-white/70 px-6 py-3 text-sm font-medium text-charcoal transition hover:bg-white;
+  }
+}
