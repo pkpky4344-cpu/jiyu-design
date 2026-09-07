@@ -21,6 +21,24 @@ export default function AdminDashboardPage() {
     load();
   }, []);
 
+  const handleStatusChange = async (customerId: number, newStatus: string) => {
+    setCustomers((prev) => prev.map((c) => (c.id === customerId ? { ...c, status: newStatus } : c)));
+
+    const response = await fetch(`/api/admin/customers/${customerId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (!response.ok) {
+      const refreshed = await fetch('/api/admin/customers');
+      if (refreshed.ok) {
+        const data = await refreshed.json();
+        setCustomers(data.customers || []);
+      }
+    }
+  };
+
   if (status === 'loading') {
     return null;
   }
@@ -74,7 +92,8 @@ export default function AdminDashboardPage() {
                   <td className="px-4 py-3">{customer.address}</td>
                   <td className="px-4 py-3">
                     <select
-                      defaultValue={customer.status}
+                      value={customer.status}
+                      onChange={(e) => handleStatusChange(customer.id, e.target.value)}
                       className="rounded-lg border border-[#2a241f]/10 bg-white px-2 py-1"
                     >
                       {['신규상담','상담완료','견적발송','계약완료','시공중','시공완료','보류','이탈'].map((state) => (
