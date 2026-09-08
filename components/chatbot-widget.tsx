@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { getPortfolioProjects } from '@/lib/data';
 
@@ -43,8 +43,14 @@ export function ChatbotWidget() {
   const [extraRequest, setExtraRequest] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [consent1, setConsent1] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messages]);
 
   const addBotText = (text: string) => {
     setMessages((prev) => [...prev, { id: nextId(), from: 'bot', kind: 'text', text }]);
@@ -111,22 +117,26 @@ export function ChatbotWidget() {
     setSubmitting(true);
     setSubmitError('');
 
-    const response = await fetch('/api/chatbot/lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hospitalType, stage, size, timing, extraRequest, name, phone }),
-    });
+    try {
+      const response = await fetch('/api/chatbot/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hospitalType, stage, size, timing, extraRequest, name, phone, consent1 }),
+      });
 
-    setSubmitting(false);
+      if (!response.ok) {
+        setSubmitError('제출 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
 
-    if (!response.ok) {
+      addUserText(`${name} / ${phone}${extraRequest ? ` / ${extraRequest}` : ''}`);
+      addBotText('감사합니다. 담당자가 확인 후 빠르게 연락드리겠습니다.');
+      setStep('done');
+    } catch (error) {
       setSubmitError('제출 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
-      return;
+    } finally {
+      setSubmitting(false);
     }
-
-    addUserText(`${name} / ${phone}${extraRequest ? ` / ${extraRequest}` : ''}`);
-    addBotText('감사합니다. 담당자가 확인 후 빠르게 연락드리겠습니다.');
-    setStep('done');
   };
 
   if (!open) {
@@ -186,6 +196,7 @@ export function ChatbotWidget() {
             </div>
           );
         })}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className="flex-shrink-0 px-5 pb-4">
@@ -248,6 +259,16 @@ export function ChatbotWidget() {
                 className="w-1/2 rounded-full border border-[#2a241f]/12 bg-white px-3 py-2 text-[12.5px] outline-none focus:border-bronze"
               />
             </div>
+            <label className="flex items-start gap-2 text-[11px] text-[#7b685e]">
+              <input
+                type="checkbox"
+                checked={consent1}
+                onChange={(e) => setConsent1(e.target.checked)}
+                required
+                className="mt-[2px] h-3.5 w-3.5 accent-bronze"
+              />
+              <span>개인정보 수집 및 이용에 동의합니다 (상담 목적)</span>
+            </label>
             {submitError && <p className="text-[11px] text-[#7d3d3d]">{submitError}</p>}
             <button type="submit" disabled={submitting} className="btn-primary w-full !py-2 text-xs disabled:opacity-60">
               {submitting ? '전송 중...' : '상담 신청하기'}

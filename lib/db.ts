@@ -21,6 +21,14 @@ const client = getClient();
 
 let schemaReady: Promise<void> | null = null;
 
+async function migrateSchema() {
+  const columns = await client.execute('PRAGMA table_info(chatbot_leads)');
+  const hasConsent1 = columns.rows.some((row: any) => row.name === 'consent1');
+  if (!hasConsent1) {
+    await client.execute('ALTER TABLE chatbot_leads ADD COLUMN consent1 INTEGER NOT NULL DEFAULT 0');
+  }
+}
+
 function ensureSchema() {
   if (!schemaReady) {
     schemaReady = client.executeMultiple(`
@@ -64,11 +72,12 @@ function ensureSchema() {
         extra_request TEXT DEFAULT '',
         name TEXT NOT NULL,
         phone TEXT NOT NULL,
+        consent1 INTEGER NOT NULL DEFAULT 0,
         status TEXT NOT NULL DEFAULT '신규상담',
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       );
-    `);
+    `).then(migrateSchema);
   }
   return schemaReady;
 }
@@ -200,13 +209,14 @@ export async function createChatbotLead(lead: {
   extraRequest: string;
   name: string;
   phone: string;
+  consent1: boolean;
 }) {
   await ensureSchema();
   const now = new Date().toISOString();
   const result = await client.execute({
     sql: `
-      INSERT INTO chatbot_leads (hospital_type, stage, size_range, timing, extra_request, name, phone, status, created_at, updated_at)
-      VALUES (:hospital_type, :stage, :size_range, :timing, :extra_request, :name, :phone, '신규상담', :created_at, :updated_at)
+      INSERT INTO chatbot_leads (hospital_type, stage, size_range, timing, extra_request, name, phone, consent1, status, created_at, updated_at)
+      VALUES (:hospital_type, :stage, :size_range, :timing, :extra_request, :name, :phone, :consent1, '신규상담', :created_at, :updated_at)
     `,
     args: {
       hospital_type: lead.hospitalType,
@@ -216,6 +226,7 @@ export async function createChatbotLead(lead: {
       extra_request: lead.extraRequest,
       name: lead.name,
       phone: lead.phone,
+      consent1: lead.consent1 ? 1 : 0,
       created_at: now,
       updated_at: now,
     },

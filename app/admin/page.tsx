@@ -12,6 +12,8 @@ export default function AdminDashboardPage() {
   const [tab, setTab] = useState<'consult' | 'chatbot'>('consult');
   const [customers, setCustomers] = useState<any[]>([]);
   const [chatbotLeads, setChatbotLeads] = useState<any[]>([]);
+  const [customersError, setCustomersError] = useState(false);
+  const [chatbotError, setChatbotError] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -20,15 +22,25 @@ export default function AdminDashboardPage() {
         fetch('/api/admin/chatbot-leads'),
       ]);
 
-      if (!customersRes.ok || !chatbotRes.ok) {
+      if (customersRes.status === 401 || chatbotRes.status === 401) {
         setStatus('unauthorized');
         return;
       }
 
-      const customersData = await customersRes.json();
-      const chatbotData = await chatbotRes.json();
-      setCustomers(customersData.customers || []);
-      setChatbotLeads(chatbotData.leads || []);
+      if (customersRes.ok) {
+        const customersData = await customersRes.json();
+        setCustomers(customersData.customers || []);
+      } else {
+        setCustomersError(true);
+      }
+
+      if (chatbotRes.ok) {
+        const chatbotData = await chatbotRes.json();
+        setChatbotLeads(chatbotData.leads || []);
+      } else {
+        setChatbotError(true);
+      }
+
       setStatus('authorized');
     };
     load();
@@ -108,6 +120,10 @@ export default function AdminDashboardPage() {
           <p className="mt-3 text-3xl text-charcoal">{rows.filter((r) => r.status === '계약완료').length}</p>
         </div>
       </div>
+
+      {((tab === 'consult' && customersError) || (tab === 'chatbot' && chatbotError)) && (
+        <p className="mt-6 text-sm text-[#7d3d3d]">목록을 불러오지 못했습니다.</p>
+      )}
 
       <div className="mt-10 panel overflow-hidden">
         <div className="overflow-x-auto">

@@ -2,14 +2,20 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createChatbotLead } from '@/lib/db';
 
+const HOSPITAL_TYPES = ['치과', '한의원', '피부과·성형외과', '일반의원', '기타'] as const;
+const STAGES = ['신규개원', '이전', '리모델링', '부분공사'] as const;
+const SIZES = ['20평 이하', '20~40평', '40평 이상'] as const;
+const TIMINGS = ['1개월 이내', '3개월 이내', '6개월 이내', '미정'] as const;
+
 const schema = z.object({
-  hospitalType: z.string().min(1),
-  stage: z.string().min(1),
-  size: z.string().min(1),
-  timing: z.string().min(1),
-  extraRequest: z.string().optional().default(''),
-  name: z.string().min(1),
-  phone: z.string().min(1),
+  hospitalType: z.enum(HOSPITAL_TYPES),
+  stage: z.enum(STAGES),
+  size: z.enum(SIZES),
+  timing: z.enum(TIMINGS),
+  extraRequest: z.string().max(1000).optional().default(''),
+  name: z.string().min(1).max(50),
+  phone: z.string().min(1).max(30),
+  consent1: z.boolean(),
 });
 
 export async function POST(request: Request) {
@@ -18,6 +24,10 @@ export async function POST(request: Request) {
 
   if (!parsed.success) {
     return NextResponse.json({ message: '필수 항목이 누락되었습니다.' }, { status: 400 });
+  }
+
+  if (!parsed.data.consent1) {
+    return NextResponse.json({ message: '개인정보 수집 및 이용에 동의해주세요.' }, { status: 400 });
   }
 
   try {
@@ -29,6 +39,7 @@ export async function POST(request: Request) {
       extraRequest: parsed.data.extraRequest,
       name: parsed.data.name,
       phone: parsed.data.phone,
+      consent1: parsed.data.consent1,
     });
 
     return NextResponse.json({ ok: true, leadId });
