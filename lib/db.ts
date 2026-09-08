@@ -54,6 +54,20 @@ function ensureSchema() {
         created_at TEXT NOT NULL,
         FOREIGN KEY(customer_id) REFERENCES customers(id)
       );
+
+      CREATE TABLE IF NOT EXISTS chatbot_leads (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        hospital_type TEXT NOT NULL,
+        stage TEXT NOT NULL,
+        size_range TEXT NOT NULL,
+        timing TEXT NOT NULL,
+        extra_request TEXT DEFAULT '',
+        name TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT '신규상담',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
     `);
   }
   return schemaReady;
@@ -175,5 +189,50 @@ export async function updateCustomerStatus(customerId: number, status: string) {
   await client.execute({
     sql: 'UPDATE customers SET status = :status, updated_at = :updated_at WHERE id = :customerId',
     args: { status, updated_at: new Date().toISOString(), customerId },
+  });
+}
+
+export async function createChatbotLead(lead: {
+  hospitalType: string;
+  stage: string;
+  sizeRange: string;
+  timing: string;
+  extraRequest: string;
+  name: string;
+  phone: string;
+}) {
+  await ensureSchema();
+  const now = new Date().toISOString();
+  const result = await client.execute({
+    sql: `
+      INSERT INTO chatbot_leads (hospital_type, stage, size_range, timing, extra_request, name, phone, status, created_at, updated_at)
+      VALUES (:hospital_type, :stage, :size_range, :timing, :extra_request, :name, :phone, '신규상담', :created_at, :updated_at)
+    `,
+    args: {
+      hospital_type: lead.hospitalType,
+      stage: lead.stage,
+      size_range: lead.sizeRange,
+      timing: lead.timing,
+      extra_request: lead.extraRequest,
+      name: lead.name,
+      phone: lead.phone,
+      created_at: now,
+      updated_at: now,
+    },
+  });
+  return Number(result.lastInsertRowid);
+}
+
+export async function getChatbotLeads() {
+  await ensureSchema();
+  const result = await client.execute('SELECT * FROM chatbot_leads ORDER BY id DESC');
+  return result.rows as any[];
+}
+
+export async function updateChatbotLeadStatus(id: number, status: string) {
+  await ensureSchema();
+  await client.execute({
+    sql: 'UPDATE chatbot_leads SET status = :status, updated_at = :updated_at WHERE id = :id',
+    args: { status, updated_at: new Date().toISOString(), id },
   });
 }
