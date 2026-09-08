@@ -258,7 +258,7 @@ export function ChatbotWidget() {
           <Link href="/consult" className="btn-secondary block text-center !py-2 text-xs">상담 신청 페이지로 이동</Link>
         )}
         {step === 'done' && (
-          <div className="rounded-full bg-[#eee3d8] px-4 py-[9px] text-center text-[12.5px] text-charcoal">상담 신청이 접수되었습니다</div>
+          <div className="rounded-full bg-sand px-4 py-[9px] text-center text-[12.5px] text-charcoal">상담 신청이 접수되었습니다</div>
         )}
       </div>
     </div>
