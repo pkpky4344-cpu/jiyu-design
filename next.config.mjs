@@ -15,7 +15,10 @@ const nextConfig = {
   // (Next.js 14.2.15 기준 이 옵션은 experimental 아래에 있음 — 15부터 최상위로 이동)
   experimental: {
     outputFileTracingIncludes: {
-      '/api/chatbot/lead': ['./node_modules/pdfkit/js/**/*'],
+      '/api/chatbot/lead': [
+        './node_modules/pdfkit/js/**/*',
+        './assets/fonts/**/*',
+      ],
     },
   },
 };
