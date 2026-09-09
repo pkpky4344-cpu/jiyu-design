@@ -9,6 +9,10 @@ const STAGES = ['신규개원', '이전', '리모델링', '부분공사'] as con
 const SIZES = ['20평 이하', '20~40평', '40평 이상'] as const;
 const TIMINGS = ['1개월 이내', '3개월 이내', '6개월 이내', '미정'] as const;
 
+// AI 리포트 생성(웹검색 3건 병렬) + PDF + 이메일 발송이 응답 이후 백그라운드(waitUntil)로 계속
+// 실행되므로, Vercel Hobby 플랜에서 허용하는 최대치로 함수 실행 시간을 늘려둔다.
+export const maxDuration = 60;
+
 const schema = z.object({
   hospitalType: z.enum(HOSPITAL_TYPES),
   stage: z.enum(STAGES),

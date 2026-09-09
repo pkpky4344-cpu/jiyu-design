@@ -21,8 +21,8 @@ function thisMonthLabel() {
 async function generateSection(prompt: string): Promise<string> {
   const response = await client.messages.create({
     model: MODEL,
-    max_tokens: 3000,
-    tools: [{ type: 'web_search_20260209', name: 'web_search', max_uses: 3 }],
+    max_tokens: 1500,
+    tools: [{ type: 'web_search_20260209', name: 'web_search', max_uses: 2 }],
     messages: [{ role: 'user', content: prompt }],
   });
 
