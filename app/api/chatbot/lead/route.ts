@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { waitUntil } from '@vercel/functions';
 import { z } from 'zod';
 import { createChatbotLead } from '@/lib/db';
 import { processChatbotReport } from '@/lib/report-pipeline';
@@ -9,8 +8,9 @@ const STAGES = ['신규개원', '이전', '리모델링', '부분공사'] as con
 const SIZES = ['20평 이하', '20~40평', '40평 이상'] as const;
 const TIMINGS = ['1개월 이내', '3개월 이내', '6개월 이내', '미정'] as const;
 
-// AI 리포트 생성(웹검색 3건 병렬) + PDF + 이메일 발송이 응답 이후 백그라운드(waitUntil)로 계속
-// 실행되므로, Vercel Hobby 플랜에서 허용하는 최대치로 함수 실행 시간을 늘려둔다.
+// AI 리포트 생성(웹검색 포함) + PDF + 이메일 발송을 응답 전에 끝까지 기다린다 (Vercel의
+// waitUntil은 트래픽이 적을 때 백그라운드 작업이 조용히 유실될 수 있어 신뢰할 수 없음 —
+// 요청-응답 안에서 확실히 끝내거나 확실히 실패로 기록하는 쪽을 택함).
 export const maxDuration = 60;
 
 const schema = z.object({
@@ -50,9 +50,9 @@ export async function POST(request: Request) {
       consent1: parsed.data.consent1,
     });
 
-    waitUntil(processChatbotReport(leadId));
+    const reportStatus = await processChatbotReport(leadId);
 
-    return NextResponse.json({ ok: true, leadId });
+    return NextResponse.json({ ok: true, leadId, reportStatus });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: '챗봇 상담 접수 처리 중 오류가 발생했습니다.' }, { status: 500 });

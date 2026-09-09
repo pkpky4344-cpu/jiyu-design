@@ -130,8 +130,13 @@ export function ChatbotWidget() {
         return;
       }
 
+      const data = await response.json();
       addUserText(`${name} / ${phone}${extraRequest ? ` / ${extraRequest}` : ''}`);
-      addBotText('제출이 완료되었습니다. 잠시 후 정리된 자료를 메일로 보내드리겠습니다. 감사합니다.');
+      if (data.reportStatus === 'sent') {
+        addBotText('고객님의 메일로 관련 자료를 발송해 드렸습니다. 감사합니다.');
+      } else {
+        addBotText('상담 신청이 접수되었습니다. 담당자가 확인 후 빠르게 연락드리겠습니다.');
+      }
       setStep('done');
     } catch (error) {
       setSubmitError('제출 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
@@ -285,7 +290,7 @@ export function ChatbotWidget() {
             </label>
             {submitError && <p className="text-[11px] text-[#7d3d3d]">{submitError}</p>}
             <button type="submit" disabled={submitting} className="btn-primary w-full !py-2 text-xs disabled:opacity-60">
-              {submitting ? '전송 중...' : '상담 신청하기'}
+              {submitting ? '맞춤 자료 준비 중... (최대 1분)' : '상담 신청하기'}
             </button>
           </form>
         )}
