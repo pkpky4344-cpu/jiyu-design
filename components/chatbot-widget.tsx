@@ -43,6 +43,7 @@ export function ChatbotWidget() {
   const [extraRequest, setExtraRequest] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [consent1, setConsent1] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -112,7 +113,7 @@ export function ChatbotWidget() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phone) return;
+    if (!name || !phone || !email) return;
 
     setSubmitting(true);
     setSubmitError('');
@@ -121,7 +122,7 @@ export function ChatbotWidget() {
       const response = await fetch('/api/chatbot/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hospitalType, stage, size, timing, extraRequest, name, phone, consent1 }),
+        body: JSON.stringify({ hospitalType, stage, size, timing, extraRequest, name, phone, email, consent1 }),
       });
 
       if (!response.ok) {
@@ -141,16 +142,21 @@ export function ChatbotWidget() {
 
   if (!open) {
     return (
-      <button
-        type="button"
-        aria-label="인테리어 상담 시작하기"
-        onClick={() => setOpen(true)}
-        className="fixed bottom-8 right-8 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-charcoal text-[#f9f5f1] shadow-soft transition hover:bg-[#1d1a18]"
-      >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-        </svg>
-      </button>
+      <div className="group fixed bottom-8 right-8 z-50 flex items-center gap-3">
+        <span className="pointer-events-none translate-x-2 whitespace-nowrap rounded-full bg-charcoal px-4 py-2 text-xs text-[#f9f5f1] opacity-0 shadow-soft transition duration-200 group-hover:translate-x-0 group-hover:opacity-100">
+          인테리어 문의 하기
+        </span>
+        <button
+          type="button"
+          aria-label="인테리어 상담 시작하기"
+          onClick={() => setOpen(true)}
+          className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-charcoal text-[#f9f5f1] shadow-soft transition hover:bg-[#1d1a18]"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+          </svg>
+        </button>
+      </div>
     );
   }
 
@@ -259,6 +265,14 @@ export function ChatbotWidget() {
                 className="w-1/2 rounded-full border border-[#2a241f]/12 bg-white px-3 py-2 text-[12.5px] outline-none focus:border-bronze"
               />
             </div>
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="이메일 (맞춤 자료 발송용)"
+              className="w-full rounded-full border border-[#2a241f]/12 bg-white px-3 py-2 text-[12.5px] outline-none focus:border-bronze"
+            />
             <label className="flex items-start gap-2 text-[11px] text-[#7b685e]">
               <input
                 type="checkbox"

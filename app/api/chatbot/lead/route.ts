@@ -15,6 +15,7 @@ const schema = z.object({
   extraRequest: z.string().max(1000).optional().default(''),
   name: z.string().min(1).max(50),
   phone: z.string().min(1).max(30),
+  email: z.string().email().max(100),
   consent1: z.boolean(),
 });
 
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
       extraRequest: parsed.data.extraRequest,
       name: parsed.data.name,
       phone: parsed.data.phone,
+      email: parsed.data.email,
       consent1: parsed.data.consent1,
     });
 

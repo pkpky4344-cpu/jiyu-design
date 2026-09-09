@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 const CONSULT_COLUMNS = ['이름', '연락처', '주소', '상태', '접수일'];
-const CHATBOT_COLUMNS = ['이름', '연락처', '병원종류', '진행단계', '평수', '희망시기', '상태', '접수일'];
+const CHATBOT_COLUMNS = ['이름', '연락처', '이메일', '병원종류', '진행단계', '평수', '희망시기', '상태', '접수일'];
 const STATUS_OPTIONS = ['신규상담', '상담완료', '견적발송', '계약완료', '시공중', '시공완료', '보류', '이탈'];
 
 export default function AdminDashboardPage() {
@@ -160,6 +160,7 @@ export default function AdminDashboardPage() {
                     <tr key={lead.id} className="border-t border-[#2a241f]/5">
                       <td className="px-4 py-3">{lead.name}</td>
                       <td className="px-4 py-3">{lead.phone}</td>
+                      <td className="px-4 py-3">{lead.email}</td>
                       <td className="px-4 py-3">{lead.hospital_type}</td>
                       <td className="px-4 py-3">{lead.stage}</td>
                       <td className="px-4 py-3">{lead.size_range}</td>

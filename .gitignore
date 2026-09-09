@@ -9,3 +9,4 @@ coverage
 sqlite.db
 sqlite.db-journal
 data/
+.claude/
