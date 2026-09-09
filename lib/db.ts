@@ -30,6 +30,9 @@ async function migrateSchema() {
   if (!columnNames.includes('email')) {
     await client.execute("ALTER TABLE chatbot_leads ADD COLUMN email TEXT NOT NULL DEFAULT ''");
   }
+  if (!columnNames.includes('report_status')) {
+    await client.execute("ALTER TABLE chatbot_leads ADD COLUMN report_status TEXT NOT NULL DEFAULT 'pending'");
+  }
 }
 
 function ensureSchema() {
@@ -78,6 +81,7 @@ function ensureSchema() {
         email TEXT NOT NULL DEFAULT '',
         consent1 INTEGER NOT NULL DEFAULT 0,
         status TEXT NOT NULL DEFAULT '신규상담',
+        report_status TEXT NOT NULL DEFAULT 'pending',
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       );
@@ -251,5 +255,22 @@ export async function updateChatbotLeadStatus(id: number, status: string) {
   await client.execute({
     sql: 'UPDATE chatbot_leads SET status = :status, updated_at = :updated_at WHERE id = :id',
     args: { status, updated_at: new Date().toISOString(), id },
+  });
+}
+
+export async function getChatbotLeadById(id: number) {
+  await ensureSchema();
+  const result = await client.execute({
+    sql: 'SELECT * FROM chatbot_leads WHERE id = :id',
+    args: { id },
+  });
+  return result.rows[0] as any;
+}
+
+export async function updateChatbotLeadReportStatus(id: number, reportStatus: 'pending' | 'sent' | 'failed') {
+  await ensureSchema();
+  await client.execute({
+    sql: 'UPDATE chatbot_leads SET report_status = :report_status, updated_at = :updated_at WHERE id = :id',
+    args: { report_status: reportStatus, updated_at: new Date().toISOString(), id },
   });
 }

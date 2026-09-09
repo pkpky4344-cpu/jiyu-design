@@ -4,7 +4,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 const CONSULT_COLUMNS = ['이름', '연락처', '주소', '상태', '접수일'];
-const CHATBOT_COLUMNS = ['이름', '연락처', '이메일', '병원종류', '진행단계', '평수', '희망시기', '상태', '접수일'];
+const CHATBOT_COLUMNS = ['이름', '연락처', '이메일', '병원종류', '진행단계', '평수', '희망시기', '상태', '자료발송', '접수일'];
+
+const REPORT_STATUS_LABEL: Record<string, string> = {
+  pending: '발송중',
+  sent: '발송완료',
+  failed: '발송실패',
+};
 const STATUS_OPTIONS = ['신규상담', '상담완료', '견적발송', '계약완료', '시공중', '시공완료', '보류', '이탈'];
 
 export default function AdminDashboardPage() {
@@ -176,6 +182,7 @@ export default function AdminDashboardPage() {
                           ))}
                         </select>
                       </td>
+                      <td className="px-4 py-3">{REPORT_STATUS_LABEL[lead.report_status] ?? lead.report_status}</td>
                       <td className="px-4 py-3">{new Date(lead.created_at).toLocaleDateString()}</td>
                     </tr>
                   ))}

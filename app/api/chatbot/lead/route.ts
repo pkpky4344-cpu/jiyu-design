@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { waitUntil } from '@vercel/functions';
 import { z } from 'zod';
 import { createChatbotLead } from '@/lib/db';
+import { processChatbotReport } from '@/lib/report-pipeline';
 
 const HOSPITAL_TYPES = ['치과', '한의원', '피부과·성형외과', '일반의원', '기타'] as const;
 const STAGES = ['신규개원', '이전', '리모델링', '부분공사'] as const;
@@ -43,6 +45,8 @@ export async function POST(request: Request) {
       email: parsed.data.email,
       consent1: parsed.data.consent1,
     });
+
+    waitUntil(processChatbotReport(leadId));
 
     return NextResponse.json({ ok: true, leadId });
   } catch (error) {

@@ -131,7 +131,7 @@ export function ChatbotWidget() {
       }
 
       addUserText(`${name} / ${phone}${extraRequest ? ` / ${extraRequest}` : ''}`);
-      addBotText('감사합니다. 담당자가 확인 후 빠르게 연락드리겠습니다.');
+      addBotText('제출이 완료되었습니다. 잠시 후 정리된 자료를 메일로 보내드리겠습니다. 감사합니다.');
       setStep('done');
     } catch (error) {
       setSubmitError('제출 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
