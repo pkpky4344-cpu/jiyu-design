@@ -1,15 +1,27 @@
 'use client';
 
 import { useState } from 'react';
+import Script from 'next/script';
 
 const initialForm = {
   name: '',
   address: '',
+  addressDetail: '',
   phone: '',
   request: '',
   consent1: false,
   consent2: false,
 };
+
+declare global {
+  interface Window {
+    daum?: {
+      Postcode: new (options: { oncomplete: (data: { roadAddress: string; jibunAddress: string }) => void }) => {
+        open: () => void;
+      };
+    };
+  }
+}
 
 export function InlineConsultForm() {
   const [form, setForm] = useState(initialForm);
@@ -17,6 +29,15 @@ export function InlineConsultForm() {
 
   const updateField = (field: keyof typeof form, value: string | boolean) => {
     setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const openAddressSearch = () => {
+    if (!window.daum) return;
+    new window.daum.Postcode({
+      oncomplete: (data) => {
+        setForm((current) => ({ ...current, address: data.roadAddress || data.jibunAddress }));
+      },
+    }).open();
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -31,7 +52,10 @@ export function InlineConsultForm() {
     const response = await fetch('/api/consult', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        address: `${form.address} ${form.addressDetail}`.trim(),
+      }),
     });
     const data = await response.json();
 
@@ -67,7 +91,29 @@ export function InlineConsultForm() {
 
           <label className="block">
             <span className="mb-2 block text-sm text-[#f7f2ed]">주소</span>
-            <input required value={form.address} onChange={(event) => updateField('address', event.target.value)} className="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white outline-none focus:border-[#d2b496]" />
+            <div className="flex gap-2">
+              <input
+                required
+                readOnly
+                value={form.address}
+                placeholder="주소 찾기 버튼을 눌러주세요"
+                onClick={openAddressSearch}
+                className="w-full cursor-pointer rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#d2b496]"
+              />
+              <button
+                type="button"
+                onClick={openAddressSearch}
+                className="shrink-0 whitespace-nowrap rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white transition hover:bg-white/20"
+              >
+                주소 찾기
+              </button>
+            </div>
+            <input
+              value={form.addressDetail}
+              onChange={(event) => updateField('addressDetail', event.target.value)}
+              placeholder="상세 주소 (동/호수 등)"
+              className="mt-2 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#d2b496]"
+            />
           </label>
 
           <label className="block">
@@ -84,6 +130,7 @@ export function InlineConsultForm() {
           <button type="submit" className="inline-flex w-full items-center justify-center rounded-full bg-[#d2b496] px-6 py-3 text-sm font-semibold text-[#2a241f] transition hover:bg-[#e2c9a9]">상담 신청하기</button>
         </form>
       </div>
+      <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" strategy="lazyOnload" />
     </section>
   );
 }

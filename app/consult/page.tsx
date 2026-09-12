@@ -1,15 +1,27 @@
 "use client";
 
 import { useState } from 'react';
+import Script from 'next/script';
 
 const initialForm = {
   name: '',
   address: '',
+  addressDetail: '',
   phone: '',
   request: '',
   consent1: false,
   consent2: false,
 };
+
+declare global {
+  interface Window {
+    daum?: {
+      Postcode: new (options: { oncomplete: (data: { roadAddress: string; jibunAddress: string }) => void }) => {
+        open: () => void;
+      };
+    };
+  }
+}
 
 const consentText = {
   consent1: `개인정보 수집 및 이용 동의 (placeholder)
@@ -41,6 +53,15 @@ export default function ConsultPage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  const openAddressSearch = () => {
+    if (!window.daum) return;
+    new window.daum.Postcode({
+      oncomplete: (data) => {
+        setForm((prev) => ({ ...prev, address: data.roadAddress || data.jibunAddress }));
+      },
+    }).open();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -52,7 +73,10 @@ export default function ConsultPage() {
     const response = await fetch('/api/consult', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        address: `${form.address} ${form.addressDetail}`.trim(),
+      }),
     });
 
     const data = await response.json();
@@ -96,11 +120,28 @@ export default function ConsultPage() {
 
           <label className="mt-6 block">
             <span className="mb-2 block text-sm font-medium text-[#403a36]">주소</span>
+            <div className="flex gap-2">
+              <input
+                required
+                readOnly
+                value={form.address}
+                placeholder="주소 찾기 버튼을 눌러주세요"
+                onClick={openAddressSearch}
+                className="w-full cursor-pointer rounded-xl border border-[#2a241f]/10 bg-white/80 px-4 py-3 outline-none ring-0 focus:border-[#9d7a5f]"
+              />
+              <button
+                type="button"
+                onClick={openAddressSearch}
+                className="btn-secondary shrink-0 whitespace-nowrap px-4"
+              >
+                주소 찾기
+              </button>
+            </div>
             <input
-              required
-              value={form.address}
-              onChange={(e) => handleChange('address', e.target.value)}
-              className="w-full rounded-xl border border-[#2a241f]/10 bg-white/80 px-4 py-3 outline-none ring-0 focus:border-[#9d7a5f]"
+              value={form.addressDetail}
+              onChange={(e) => handleChange('addressDetail', e.target.value)}
+              placeholder="상세 주소 (동/호수 등)"
+              className="mt-2 w-full rounded-xl border border-[#2a241f]/10 bg-white/80 px-4 py-3 outline-none ring-0 focus:border-[#9d7a5f]"
             />
           </label>
 
@@ -152,6 +193,7 @@ export default function ConsultPage() {
           </button>
         </form>
       </div>
+      <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" strategy="lazyOnload" />
     </div>
   );
 }
