@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export function PortfolioGallery({
@@ -46,59 +47,62 @@ export function PortfolioGallery({
         </div>
       )}
 
-      {openIndex !== null && (
-        <div
-          className="fixed inset-0 z-50 flex h-[100dvh] w-[100dvw] items-center justify-center overflow-auto bg-black/85 p-4"
-          onClick={close}
-          role="dialog"
-          aria-modal="true"
-          aria-label={title}
-        >
-          <button
-            type="button"
+      {openIndex !== null &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-50 flex h-[100dvh] w-[100dvw] items-center justify-center overflow-auto bg-black/85 p-4"
             onClick={close}
-            className="absolute right-5 top-5 text-white/80 transition hover:text-white"
-            aria-label="닫기"
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
           >
-            <X className="h-8 w-8" />
-          </button>
-
-          {images.length > 1 && (
             <button
               type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                showPrev();
-              }}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-white/80 transition hover:text-white sm:left-6"
-              aria-label="이전 사진"
+              onClick={close}
+              className="absolute right-5 top-5 text-white/80 transition hover:text-white"
+              aria-label="닫기"
             >
-              <ChevronLeft className="h-10 w-10" />
+              <X className="h-8 w-8" />
             </button>
-          )}
 
-          <img
-            src={images[openIndex]}
-            alt={`${title} ${openIndex + 1}`}
-            onClick={(event) => event.stopPropagation()}
-            className="max-h-[80dvh] max-w-[90dvw] rounded-lg object-contain"
-          />
+            {images.length > 1 && (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  showPrev();
+                }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-white/80 transition hover:text-white sm:left-6"
+                aria-label="이전 사진"
+              >
+                <ChevronLeft className="h-10 w-10" />
+              </button>
+            )}
 
-          {images.length > 1 && (
-            <button
-              type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                showNext();
-              }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 transition hover:text-white sm:right-6"
-              aria-label="다음 사진"
-            >
-              <ChevronRight className="h-10 w-10" />
-            </button>
-          )}
-        </div>
-      )}
+            <img
+              src={images[openIndex]}
+              alt={`${title} ${openIndex + 1}`}
+              onClick={(event) => event.stopPropagation()}
+              className="max-h-[80dvh] max-w-[90dvw] rounded-lg object-contain"
+            />
+
+            {images.length > 1 && (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  showNext();
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 transition hover:text-white sm:right-6"
+                aria-label="다음 사진"
+              >
+                <ChevronRight className="h-10 w-10" />
+              </button>
+            )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

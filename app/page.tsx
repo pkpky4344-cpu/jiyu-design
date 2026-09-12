@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import { MapPin, Sparkles } from 'lucide-react';
-import { getSiteSettings, getPortfolioHighlights, getHeroSlides } from '@/lib/data';
+import { getSiteSettings, getPortfolioHighlights } from '@/lib/data';
 import { InlineConsultForm } from '@/components/inline-consult-form';
 
 export default function HomePage() {
   const settings = getSiteSettings();
-  const heroSlides = getHeroSlides();
   const featuredProjects = getPortfolioHighlights();
 
   return (
@@ -29,14 +28,20 @@ export default function HomePage() {
               <Link href="/portfolio" className="btn-secondary mt-8">포트폴리오 보기</Link>
             </div>
 
-            <div className="relative overflow-hidden rounded-[32px] border border-[#3f342e]/10 bg-white/50 p-3 shadow-soft">
-              <div className="overflow-hidden rounded-[26px]">
+            <div className="relative flex h-[420px] flex-col justify-center overflow-hidden rounded-[32px] border border-[#3f342e]/10 bg-[#2a241f] p-10 shadow-soft sm:h-[480px] sm:p-12">
+              <p className="text-xs uppercase tracking-[0.22em] text-[#d2b496]">Why interior matters</p>
+              <h2 className="mt-5 text-3xl leading-tight text-white sm:text-4xl">
+                인테리어의 품격이<br />당신의 얼굴입니다.
+              </h2>
+              <p className="mt-6 max-w-sm text-sm leading-7 text-[#e8dac7]">
+                환자는 진료를 받기 전, 공간에서 먼저 신뢰를 판단합니다.{' '}
                 <img
-                  src={heroSlides[0].image}
-                  alt="jiyu design interior project"
-                  className="h-[560px] w-full object-cover"
+                  src="/logo-jiyu.svg"
+                  alt="jiyu design"
+                  className="inline-block h-4 w-auto align-middle brightness-0 invert"
                 />
-              </div>
+                은 병의원의 첫인상을 설계합니다.
+              </p>
             </div>
           </div>
         </div>
