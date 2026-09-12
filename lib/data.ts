@@ -53,7 +53,19 @@ export function getPortfolioHighlights() {
 export function getPortfolioProjects() {
   return [
     ...getPortfolioHighlights(),
-    { id: 5, title: 'Stone Atelier', category: '상업공간', year: '2025', description: '프리미엄 감각이 살아있는 브랜드 스튜디오 제안.', coverImage: '/images/project-5.jpg' },
+    {
+      id: 5,
+      title: 'Pharmacy Atelier',
+      category: '약국',
+      year: '2025',
+      description: '프리미엄 감각이 살아있는 브랜드 스튜디오 제안.',
+      coverImage: '/images/project-sagwanamu-1.jpg',
+      gallery: [
+        '/images/project-sagwanamu-1.jpg',
+        '/images/project-sagwanamu-2.jpg',
+        '/images/project-sagwanamu-3.jpg',
+      ],
+    },
     { id: 6, title: 'Oak & Calm', category: '리모델링', year: '2023', description: '기존 구조를 살리면서 모던하고 고급스러운 리모델링을 완성했습니다.', coverImage: '/images/project-6.jpg' },
   ];
 }
