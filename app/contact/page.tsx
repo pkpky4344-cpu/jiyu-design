@@ -25,9 +25,9 @@ export default function ContactPage() {
 
           <div className="panel p-6">
             <MessageCircle className="h-8 w-8 text-[#9d7a5f]" />
-            <h2 className="mt-5 text-xl text-charcoal">Kakao</h2>
-            <a href={`https://pf.kakao.com/${settings.kakaoChannel}`} className="mt-3 inline-block text-sm text-[#54463e] underline underline-offset-4">
-              @{settings.kakaoChannel}
+            <h2 className="mt-5 text-xl text-charcoal">전화</h2>
+            <a href={`tel:${settings.phone}`} className="mt-3 inline-block text-sm text-[#54463e] underline underline-offset-4">
+              {settings.phone}
             </a>
           </div>
 
@@ -41,7 +41,7 @@ export default function ContactPage() {
         <div className="mt-12 overflow-hidden rounded-[28px] border border-[#2a241f]/10 bg-white/70 p-3 shadow-soft">
           <iframe
             title="map"
-            src="https://www.google.com/maps?q=seoul&output=embed"
+            src={`https://www.google.com/maps?q=${encodeURIComponent(settings.address)}&output=embed`}
             className="h-[420px] w-full rounded-[22px] border-0"
             loading="lazy"
             allowFullScreen

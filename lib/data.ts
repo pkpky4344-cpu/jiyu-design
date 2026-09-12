@@ -3,9 +3,9 @@ export function getSiteSettings() {
     heroTitle: '따뜻한 품격으로 공간을 완성합니다.',
     heroSubtitle: 'jiyu design은 고급스러운 감성과 실용성을 함께 담아, 삶의 순간마다 편안함을 느끼는 공간을 설계합니다.',
     greeting: '안녕하세요. jiyu design 대표 전애리입니다.\n\n우리는 단순히 인테리어를 완성하는 것을 넘어, 고객의 삶과 취향이 가장 자연스럽게 드러나는 공간을 설계합니다.\n\n따뜻한 톤의 마감재, 정돈된 구성, 정성스럽게 다듬어진 디테일을 통해 일상 속에서 마음을 편안하게 만드는 공간을 제안합니다.\n\n고객과 함께 공간의 가능성을 찾고, 실사용성을 고려한 고급스러운 결과를 만들어갑니다.',
-    email: 'hello@jiyu-design.com',
-    address: '서울특별시 강남구 테헤란로 123, 7층 jiyu design',
-    kakaoChannel: 'jiyudesign',
+    email: 'nokks680627@naver.com',
+    address: '경기도 남양주시 별내중앙로 30, 305동 1211호',
+    phone: '010-7728-9653',
     ceoName: '전애리 대표',
   };
 }
