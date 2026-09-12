@@ -25,6 +25,18 @@ export default function PortfolioPage() {
               </div>
               <h2 className="mt-4 text-2xl text-charcoal">{project.title}</h2>
               <p className="mt-3 text-sm leading-6 text-[#564d48]">{project.description}</p>
+              {'gallery' in project && project.gallery && project.gallery.length > 1 && (
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  {project.gallery.map((image, index) => (
+                    <img
+                      key={image}
+                      src={image}
+                      alt={`${project.title} ${index + 1}`}
+                      className="h-20 w-full rounded-lg object-cover"
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </article>
         ))}

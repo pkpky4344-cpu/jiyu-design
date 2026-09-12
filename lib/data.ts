@@ -20,8 +20,21 @@ export function getHeroSlides() {
 
 export function getPortfolioHighlights() {
   return [
-    { id: 2, title: 'Boutique Salon', category: '상업공간', year: '2024', description: '브랜드 경험을 살린 세련된 공간 연출과 고급 마감으로 리브랜딩을 완성했습니다.', coverImage: '/images/project-2.jpg' },
-    { id: 3, title: 'Modern Loft Apartment', category: '리모델링', year: '2025', description: '좁은 평수의 한계를 극복하면서 고급스러움과 실용성을 동시에 담았습니다.', coverImage: '/images/project-3.jpg' },
+    {
+      id: 2,
+      title: 'Boutique Clinic',
+      category: '병의원',
+      year: '2025',
+      description: '브랜드 경험을 살린 세련된 공간 연출과 고급 마감으로 리브랜딩을 완성했습니다.',
+      coverImage: '/images/project-doctorview-1.jpg',
+      gallery: [
+        '/images/project-doctorview-1.jpg',
+        '/images/project-doctorview-2.jpg',
+        '/images/project-doctorview-3.jpg',
+        '/images/project-doctorview-4.jpg',
+      ],
+    },
+    { id: 3, title: 'Modern Clinic Suite', category: '병의원', year: '2026', description: '좁은 평수의 한계를 극복하면서 고급스러움과 실용성을 동시에 담았습니다.', coverImage: '/images/project-3.jpg' },
   ];
 }
 
