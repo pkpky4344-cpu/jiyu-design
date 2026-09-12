@@ -34,7 +34,19 @@ export function getPortfolioHighlights() {
         '/images/project-doctorview-4.jpg',
       ],
     },
-    { id: 3, title: 'Modern Clinic Suite', category: '병의원', year: '2026', description: '좁은 평수의 한계를 극복하면서 고급스러움과 실용성을 동시에 담았습니다.', coverImage: '/images/project-3.jpg' },
+    {
+      id: 3,
+      title: 'Modern Clinic Suite',
+      category: '병의원',
+      year: '2026',
+      description: '좁은 평수의 한계를 극복하면서 고급스러움과 실용성을 동시에 담았습니다.',
+      coverImage: '/images/project-seyeon-1.jpg',
+      gallery: [
+        '/images/project-seyeon-1.jpg',
+        '/images/project-seyeon-2.jpg',
+        '/images/project-seyeon-3.jpg',
+      ],
+    },
   ];
 }
 
