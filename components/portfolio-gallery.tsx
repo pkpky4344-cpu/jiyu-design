@@ -48,7 +48,7 @@ export function PortfolioGallery({
 
       {openIndex !== null && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
+          className="fixed inset-0 z-50 flex h-[100dvh] w-[100dvw] items-center justify-center overflow-auto bg-black/85 p-4"
           onClick={close}
           role="dialog"
           aria-modal="true"
@@ -81,7 +81,7 @@ export function PortfolioGallery({
             src={images[openIndex]}
             alt={`${title} ${openIndex + 1}`}
             onClick={(event) => event.stopPropagation()}
-            className="max-h-[85vh] max-w-[90vw] rounded-lg object-contain"
+            className="max-h-[80dvh] max-w-[90dvw] rounded-lg object-contain"
           />
 
           {images.length > 1 && (
