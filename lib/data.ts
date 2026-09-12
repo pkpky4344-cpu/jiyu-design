@@ -12,9 +12,9 @@ export function getSiteSettings() {
 
 export function getHeroSlides() {
   return [
-    { id: 1, title: 'Warm Minimal Living', image: '/images/hero-1.jpg' },
-    { id: 2, title: 'Natural Stone Kitchen', image: '/images/hero-2.jpg' },
-    { id: 3, title: 'Soft Luxury Suite', image: '/images/hero-3.jpg' },
+    { id: 1, title: 'Boutique Clinic Reception', image: '/images/project-doctorview-1.jpg' },
+    { id: 2, title: 'Modern Clinic Suite', image: '/images/project-seyeon-1.jpg' },
+    { id: 3, title: 'Pharmacy Atelier', image: '/images/project-sagwanamu-1.jpg' },
   ];
 }
 
