@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getPortfolioProjects } from '@/lib/data';
+import { PortfolioGallery } from '@/components/portfolio-gallery';
 
 export default function PortfolioPage() {
   const projects = getPortfolioProjects();
@@ -17,27 +18,20 @@ export default function PortfolioPage() {
       <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
         {projects.map((project) => (
           <article key={project.id} className="panel overflow-hidden">
-            <img src={project.coverImage} alt={project.title} className="h-72 w-full object-cover" />
-            <div className="p-6">
-              <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] text-[#7b685e]">
-                <span>{project.category}</span>
-                <span>{project.year}</span>
-              </div>
-              <h2 className="mt-4 text-2xl text-charcoal">{project.title}</h2>
-              <p className="mt-3 text-sm leading-6 text-[#564d48]">{project.description}</p>
-              {'gallery' in project && project.gallery && project.gallery.length > 1 && (
-                <div className="mt-4 grid grid-cols-3 gap-2">
-                  {project.gallery.map((image, index) => (
-                    <img
-                      key={image}
-                      src={image}
-                      alt={`${project.title} ${index + 1}`}
-                      className="h-20 w-full rounded-lg object-cover"
-                    />
-                  ))}
+            <PortfolioGallery
+              title={project.title}
+              coverImage={project.coverImage}
+              gallery={'gallery' in project ? project.gallery : undefined}
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] text-[#7b685e]">
+                  <span>{project.category}</span>
+                  <span>{project.year}</span>
                 </div>
-              )}
-            </div>
+                <h2 className="mt-4 text-2xl text-charcoal">{project.title}</h2>
+                <p className="mt-3 text-sm leading-6 text-[#564d48]">{project.description}</p>
+              </div>
+            </PortfolioGallery>
           </article>
         ))}
       </div>
